@@ -1,0 +1,41 @@
+---
+- name: Chrome
+  hosts: win_server
+  gather_facts: no
+  tasks:
+    - name: Copy the bundle.zip
+      win_copy:
+        src: GoogleChromeEnterpriseBundle64.zip
+        dest: C:\\Temp\\
+
+    - name: Extract the bundle
+      win_unzip:
+        src: C:\\Temp\\GoogleChromeEnterpriseBundle64.zip
+        dest: C:\\Temp\\Chrome
+
+    - name: Install Chrome
+      win_package:
+        path: C:\\Temp\\Chrome\\Installers\\GoogleChromeStandaloneEnterprise64.msi
+        wait: yes
+        state: present
+      when: ACTION == "Install"
+
+    - name: Uninstall Chrome
+      win_package:
+        path: C:\\Temp\\Chrome\\Installers\\GoogleChromeStandaloneEnterprise64.msi
+        wait: yes
+        state: absent
+      when: ACTION == "Uninstall"
+
+    - name: Clean up the bundle.zip
+      win_file:
+        path: C:\\Temp\\GoogleChromeEnterpriseBundle64.zip
+        state: absent
+        wait: yes
+
+    - name: Clean up the bundle
+      win_file:
+        path: C:\\Temp\\Chrome
+        state: absent
+#- name: Uninstall Chrome
+#- name: Uninstall Chrome Update healper
